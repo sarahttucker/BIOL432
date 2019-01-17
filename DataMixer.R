@@ -11,7 +11,7 @@ library(dplyr)
 #renamed FallopiaData.csv manually in my file folder to InData.csv and loaded it into R under/into the variable MyData
 MyData<-read.csv("InData.csv", header=T)
 
-#Reorder the columns so that they are in the order: ‘Total’, ‘Taxon’, ‘Senario’, ‘Nutrients’
+#Reorder the columns so that they are in the order: 'Total', 'Taxon', 'Senario', 'Nutrients'
 #remove the other columns, and filter out rows with 'Total' biomass < 60
 #I checked to make sure it worked by using head()
 ReOrg<-MyData%>%
@@ -20,17 +20,17 @@ ReOrg<-MyData%>%
 head(ReOrg)
 
 
-#If there is a column called ‘Nutrients’, replace each string with its first letter  
-BDick<-if ("Nutrients" %in% colnames(ConvertR)){  
+#If there is a column called 'Nutrients', replace each string with its first letter  
+NutReplacer<-if ("Nutrients" %in% colnames(ConvertR)){  
   factor(c(gsub("(\\w)\\w+", "\\1", ConvertR$Nutrients)))}
 #note for myself = factor turns list of strings into a factor with two levels of h and l
 
 
-#Make a new column TotalG, which converts the ‘Total’ column from mg to grams AND replace Total with TotalG
-ConvertR<-transmute(ReOrg, TotalG = Total/1000, Taxon, Scenario, Nutrients=BDick)
+#Make a new column TotalG, which converts the 'Total' column from mg to grams AND replace Total with TotalG
+ConvertR<-transmute(ReOrg, TotalG = Total/1000, Taxon, Scenario, Nutrients=NutReplacer)
 head(ConvertR)
 
-#Replace all periods . with commas , in the ‘TotalG’ column
+#Replace all periods . with commas , in the 'TotalG' column
 
 nCommas <- gsub("\\D", ",", ConvertR$TotalG)
 FinalData <- transmute(ConvertR, TotalG = nCommas, Taxon, Scenario, Nutrients)
